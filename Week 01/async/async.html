@@ -1,0 +1,107 @@
+<style>
+    .light {
+        background-color: #aaa;
+        margin: 20px;
+        height: 120px;
+        width: 120px;
+        border-radius: 60px;
+    }
+
+    .traffic-light {
+        padding: 20px;
+        width: 160px;
+        height: 450px;
+        background-color: #333;
+        border-radius: 20px;
+    }
+
+    .light.green {
+        background-color: green;
+    }
+
+    .light.yellow {
+        background-color: yellow;
+    }
+
+    .light.red {
+        background-color: red;
+    }
+
+    button {
+        display: block;
+        margin: 20px;
+        width: 160px;
+        height: 50px;
+        border-radius: 15px;
+        outline: none;
+    }
+</style>
+
+<div class="traffic-light">
+    <div class="light"></div>
+    <div class="light"></div>
+    <div class="light"></div>
+</div>
+<button id="next">Next</button>
+<button id="auto">Auto</button>
+
+<script>
+    let auto = false;
+    function green() {
+        document.getElementsByClassName("light")[2].classList.remove('red');
+        document.getElementsByClassName("light")[1].classList.remove('yellow');
+        document.getElementsByClassName("light")[0].classList.add('green')
+    }
+    function yellow() {
+        document.getElementsByClassName("light")[2].classList.remove('red');
+        document.getElementsByClassName("light")[0].classList.remove('green');
+        document.getElementsByClassName("light")[1].classList.add('yellow')
+    }
+    function red() {
+        document.getElementsByClassName("light")[0].classList.remove('green');
+        document.getElementsByClassName("light")[1].classList.remove('yellow');
+        document.getElementsByClassName("light")[2].classList.add('red')
+    }
+
+    function sleep(t) {
+        return new Promise((resolve, reject) => {
+            setTimeout(resolve, t);
+        })
+    }
+
+    function happen(element, eventName) {
+        return new Promise((resolve, reject) => {
+            element.addEventListener(eventName, resolve, { once: true });
+        })
+    }
+
+    async function autoGo() {
+        while (auto) {
+            if (auto) green()
+            await sleep(1000);
+            if (auto) yellow();
+            await sleep(200);
+            if (auto) red();
+            await sleep(500);
+        }
+    }
+    async function go() {
+        while (!auto) {
+            green()
+            await happen(document.getElementById("next"), "click");
+            yellow();
+            await happen(document.getElementById("next"), "click");
+            red();
+            await happen(document.getElementById("next"), "click");
+        }
+    }
+
+    document.getElementById("auto").addEventListener(("click"), function () {
+        auto = true;
+        autoGo();
+    });
+    document.getElementById("next").addEventListener(("click"), function () {
+        auto = false;
+        go();
+    });
+</script>

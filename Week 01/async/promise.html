@@ -59,14 +59,14 @@
 
     function go() {
         green()
-        sleep(1000)
+        sleep(10000)
         .then(() => {
             yellow();
-            return sleep(200);
+            return sleep(2000);
         })
         .then(() => {
             red();
-            return sleep(500);
+            return sleep(5000);
         })
         .then(go)
     }
